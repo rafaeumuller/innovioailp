@@ -2352,6 +2352,10 @@
     })();
 
     // ─── FORMULÁRIO DE CAPTURA DE LEAD ─────────────────────────────────
+    // Integração: Web3Forms (web3forms.com) → gratuito, sem backend
+    // IMPORTANTE: substitua WEB3FORMS_ACCESS_KEY pela chave gerada em web3forms.com
+    var WEB3FORMS_ACCESS_KEY = 'WEB3FORMS_ACCESS_KEY'; // ← cole aqui a chave
+
     async function handleFormSubmit(event) {
       event.preventDefault();
 
@@ -2374,29 +2378,34 @@
       submitBtn.style.opacity = '0.7';
       submitBtn.style.cursor = 'not-allowed';
 
+      // Oculta erro anterior
+      const errorBox = document.getElementById('form-error');
+      if (errorBox) errorBox.style.display = 'none';
+
       try {
-        // ── Envia via Formspree para contact@innovio.qzz.io ──────────────
-        const response = await fetch('https://formspree.io/f/contact@innovio.qzz.io', {
+        const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
-            name,
-            email,
-            phone,
-            agencySize: size,
-            leadSources: sources,
-            _subject: `[Innovio BR] Novo lead: ${name}`,
-            _replyto: email,
-            source: 'landing-page-br',
-            timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+            access_key: WEB3FORMS_ACCESS_KEY,
+            subject: '[Innovio BR] Novo lead: ' + name,
+            from_name: 'Innovio Landing Page',
+            replyto: email,
+            // ── Dados do lead ──────────────────────────────────────────
+            'Nome':              name,
+            'E-mail':            email,
+            'WhatsApp':          phone,
+            'Tamanho':           size,
+            'Fontes de lead':    sources,
+            'Horário (Brasília)': new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+            'Origem':            'landing-page-br'
           })
         });
 
-        if (response.ok) {
-          // ── Tela de sucesso ───────────────────────────────────────────
+        const data = await response.json();
+
+        if (data.success) {
+          // ── Tela de sucesso ─────────────────────────────────────────
           const formContainer = document.getElementById('form-container');
           formContainer.innerHTML = `
             <div class="confirmation-message">
@@ -2410,13 +2419,11 @@
             </div>
           `;
         } else {
-          // Formspree retornou erro (ex: domínio não verificado)
-          const data = await response.json().catch(() => ({}));
-          throw new Error(data?.error || `Erro ${response.status}`);
+          throw new Error(data.message || 'Resposta inválida da API');
         }
 
       } catch (err) {
-        console.error('Erro ao enviar formulário:', err);
+        console.error('[Innovio] Erro ao enviar formulário:', err.message);
 
         // Restaura botão
         submitBtn.textContent = originalText;
@@ -2425,7 +2432,6 @@
         submitBtn.style.cursor = 'pointer';
 
         // Mensagem de erro amigável
-        const errorBox = document.getElementById('form-error');
         if (errorBox) {
           errorBox.style.display = 'block';
           errorBox.textContent = 'Ocorreu um erro ao enviar. Por favor, tente novamente ou nos chame no WhatsApp.';
