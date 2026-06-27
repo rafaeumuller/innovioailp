@@ -2401,8 +2401,8 @@
 
         const data = await response.json();
 
-        if (data.success) {
-          // ── Tela de sucesso ─────────────────────────────────────────
+        if (response.ok) {
+		// ── Tela de sucesso ─────────────────────────────────────────
           const formContainer = document.getElementById('form-container');
           formContainer.innerHTML = `
             <div class="confirmation-message">
