@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ── LANGUAGE REDIRECT (fires before render to avoid flash) ── -->
+  <script>
+    (function() {
+      var langs = (navigator.languages && navigator.languages.length)
+        ? navigator.languages
+        : [navigator.language || navigator.userLanguage || ''];
+      var isPt = langs.some(function(l) { return l && l.toLowerCase().startsWith('pt'); });
+      if (isPt) {
+        window.location.replace('index-br.html');
+      }
+    })();
+  </script>
+  <!-- ─────────────────────────────────────────────────────────── -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Innovio — AI-Powered Lead Qualification for Real Estate</title>
