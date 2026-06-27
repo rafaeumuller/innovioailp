@@ -2389,18 +2389,14 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify({
-											 
-           subject: '[Innovio BR] Novo lead: ' + name,
-            name: name,
-            email: email,
-            phone: phone,
-            agency-size: agency-size,
-			lead-sources: lead-sources
-											 
-																										  
-												  
-          })
+         body: JSON.stringify({
+  			subject: '[Innovio BR] Novo lead: ' + name,
+  			name: name,
+ 			email: email,
+ 			phone: phone,
+  			agency_size: size,
+  			lead_sources: sources
+			})
         });
 
         const data = await response.json();
