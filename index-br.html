@@ -2351,10 +2351,10 @@
       }
     })();
 
-    // ─── FORMULÁRIO DE CAPTURA DE LEAD ─────────────────────────────────
-    // Integração: Web3Forms (web3forms.com) → gratuito, sem backend
-    // IMPORTANTE: substitua WEB3FORMS_ACCESS_KEY pela chave gerada em web3forms.com
-    var WEB3FORMS_ACCESS_KEY = 'cc5eb8d5-004a-4f85-b44d-5c68d5db7488'; // ← cole aqui a chave
+// ─── FORMULÁRIO DE CAPTURA DE LEAD ─────────────────────────────────
+    // Integração: Formspree (formspree.io) → gratuito, sem backend
+    // IMPORTANTE: substitua FORMSPREE_ENDPOINT pelo endpoint do seu formulário no Formspree
+    var FORMSPREE_ENDPOINT = 'https://formspree.io/f/contact@innovio.qzz.io'; // ← cole aqui o endpoint
 
     async function handleFormSubmit(event) {
       event.preventDefault();
@@ -2383,22 +2383,25 @@
       if (errorBox) errorBox.style.display = 'none';
 
       try {
-        const response = await fetch('https://api.web3forms.com/submit', {
+        const response = await fetch(FORMSPREE_ENDPOINT, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({
-            access_key: WEB3FORMS_ACCESS_KEY,
+											 
             subject: '[Innovio BR] Novo lead: ' + name,
-            from_name: 'Innovio Landing Page',
-            replyto: email,
-            // ── Dados do lead ──────────────────────────────────────────
-            'Nome':              name,
-            'E-mail':            email,
-            'WhatsApp':          phone,
-            'Tamanho':           size,
-            'Fontes de lead':    sources,
-            'Horário (Brasília)': new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
-            'Origem':            'landing-page-br'
+            name: name,
+            email: email,
+            phone: phone,
+            company: company,
+            leads_per_month: volume,
+            crm: crm,
+            message: message
+										 
+																										  
+												  
           })
         });
 
